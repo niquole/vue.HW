@@ -1,5 +1,3 @@
-import { connect } from 'tls';
-
 const express = require('express');
 const app = express();
 var mysql = require('mysql')
@@ -8,7 +6,7 @@ app.get("/", (req, res) => {
 })
 
 app.listen(3000, function() {
-    console.log('server sunning on port 300');
+    console.log('server running on port 300');
 })
 
 var connection = mysql.createConnection({
@@ -29,7 +27,19 @@ connection.query('SELECT * FROM users', function(err, data) {
         for ( let i = 0; i < data.length; i++) {
             users += data[i].name + ' ';
         }
+        res.send(users);
     })
 })
+
+connection.query('SELECT * FROM users', function(err, data) {
+    if(err) throw err
+    for (let a = 0; a < data.length; a++) {
+        app.get('/users/' + data[a].id, function(req, res) {
+            res.send(data[a].name);
+        })
+    }
+
+})
+
 
 connection.end();
